@@ -1,0 +1,12 @@
+==================================================
+GHI CHÚ CẤU TRÚC CART SLICE (Redux Toolkit)
+==================================================
+
+1. State của cartSlice gồm có:
+   - items: Mảng (Array) chứa danh sách các sản phẩm có trong giỏ hàng. Mỗi sản phẩm có các thuộc tính (id, title, price, image, quantity).
+   - totalAmount: Biến số (Number) lưu tổng giá trị tiền cần thanh toán của toàn bộ giỏ hàng.
+
+2. Chức năng của 3 Reducers chính:
+   - addToCart: Thêm sản phẩm vào mảng `items`. Nếu sản phẩm đã tồn tại thì tăng số lượng `quantity`, sau đó tính toán lại `totalAmount`.
+   - removeFromCart: Xóa sản phẩm khỏi mảng `items` dựa vào `id` (hoặc giảm `quantity`), sau đó trừ lại số tiền tương ứng ở `totalAmount`.
+   - clearCart: Dùng khi đặt hàng thành công. Xóa sạch toàn bộ sản phẩm bằng cách reset `items` về `[]` và `totalAmount` về `0`.

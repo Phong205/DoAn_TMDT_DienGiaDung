@@ -1,6 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
+//import giỏ hàng
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+
 function App() {
   return (
       <Router>
@@ -20,8 +24,8 @@ function App() {
           <Routes>
             <Route path="/" element={<h2>Trang Chủ (Thành viên 1 phụ trách)</h2>} />
             <Route path="/products" element={<h2>Danh sách & Chi tiết sản phẩm (Thành viên 2 phụ trách)</h2>} />
-            <Route path="/cart" element={<h2>Giỏ hàng (Thành viên 3 phụ trách)</h2>} />
-            <Route path="/checkout" element={<h2>Thanh toán & Đơn hàng (Thành viên 3 phụ trách)</h2>} />
+            <Route path="/cart" element={<Cart/>} />
+            <Route path="/checkout" element={<Checkout/>} />
           </Routes>
         </div>
 
@@ -29,6 +33,7 @@ function App() {
         <footer className="bg-dark text-white text-center py-3">
           <p className="mb-0">Đồ án TMĐT - Bán Đồ Điện Gia Dụng © 2026</p>
         </footer>
+
       </Router>
   );
 }
