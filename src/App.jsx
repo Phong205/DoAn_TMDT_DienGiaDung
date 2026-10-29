@@ -24,9 +24,8 @@ function App() {
           <Routes>
             <Route path="/" element={<h2>Trang Chủ (Thành viên 1 phụ trách)</h2>} />
             <Route path="/products" element={<h2>Danh sách & Chi tiết sản phẩm (Thành viên 2 phụ trách)</h2>} />
-
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
+            <Route path="/cart" element={<Cart/>} />
+            <Route path="/checkout" element={<Checkout/>} />
           </Routes>
         </div>
 
