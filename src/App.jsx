@@ -1,30 +1,32 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Home from './pages/Home';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../features/cartSlice';
 
-function App() {
+function Cart() {
+    const dispatch = useDispatch();
+    const { items, totalQuantity, totalAmount } = useSelector((state) => state.cart);
+
+    //  nút "Thêm vào giỏ" tạm thời
+    const handleAddTest = () => {
+        dispatch(addToCart({
+            id: 1,
+            name: 'Tủ lạnh thử',
+            price: 12500000,
+            image: '',
+        }));
+    };
+
     return (
-        <Router>
-            <div className="d-flex flex-column min-vh-100 bg-light">
-                {/* Thanh điều hướng chung cho toàn website */}
-                <Header />
+        <div>
+            <h2>Giỏ hàng</h2>
+            <p>Số loại sản phẩm: {items.length}</p>
+            <p>Tổng số lượng: {totalQuantity}</p>
+            <p>Tổng tiền: {totalAmount}</p>
 
-                {/* Khu vực chứa nội dung thay đổi theo đường dẫn URL */}
-                <main className="flex-fill">
-                    <Routes>
-                        {/* Trang chủ do Thành viên 1 phụ trách */}
-                        <Route path="/" element={<Home />} />
-
-                        {/* Các trang sẽ được bàn giao cho các thành viên phát triển tiếp theo */}
-                        {/* <Route path="/products" element={<ProductList />} /> */}
-                        {/* <Route path="/product/:id" element={<ProductDetail />} /> */}
-                        {/* <Route path="/cart" element={<Cart />} /> */}
-                        {/* <Route path="/checkout" element={<Checkout />} /> */}
-                    </Routes>
-                </main>
-            </div>
-        </Router>
+            <button className="btn btn-warning" onClick={handleAddTest}>
+                + Thêm thử
+            </button>
+        </div>
     );
 }
 
-export default App;
+export default Cart;
