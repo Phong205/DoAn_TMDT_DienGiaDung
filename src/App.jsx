@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
+import ProductList from './pages/ProductList';
+import ProductDetail from './pages/ProductDetail';
 
 function App() {
     return (
@@ -16,8 +18,8 @@ function App() {
                         <Route path="/" element={<Home />} />
 
                         {/* Các trang sẽ được bàn giao cho các thành viên phát triển tiếp theo */}
-                        {/* <Route path="/products" element={<ProductList />} /> */}
-                        {/* <Route path="/product/:id" element={<ProductDetail />} /> */}
+                        <Route path="/products" element={<ProductList />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
                         {/* <Route path="/cart" element={<Cart />} /> */}
                         {/* <Route path="/checkout" element={<Checkout />} /> */}
                     </Routes>

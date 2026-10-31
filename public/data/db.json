@@ -9,7 +9,10 @@
       "image": "https://via.placeholder.com/300",
       "brand": "Panasonic",
       "rating": 4.8,
-      "specs": { "dungTich": "322 Lít", "congSuat": "120W" }
+      "specs": {
+        "dungTich": "322 Lít",
+        "congSuat": "120W"
+      }
     },
     {
       "id": 2,
@@ -20,7 +23,151 @@
       "image": "https://via.placeholder.com/300",
       "brand": "Cuckoo",
       "rating": 4.9,
-      "specs": { "dungTich": "1.8 Lít", "congSuat": "1150W" }
+      "specs": {
+        "dungTich": "1.8 Lít",
+        "congSuat": "1150W"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Tủ Lạnh Toshiba Inverter 180 Lít",
+      "category": "tu-lanh",
+      "price": 5490000,
+      "originalPrice": 6290000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Toshiba",
+      "rating": 4.5,
+      "specs": {
+        "dungTich": "180 Lít",
+        "congSuat": "90W",
+        "congNghe": "Inverter"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Máy Giặt Panasonic Inverter 9 Kg",
+      "category": "may-giat",
+      "price": 7990000,
+      "originalPrice": 9490000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Panasonic",
+      "rating": 4.7,
+      "specs": {
+        "dungTich": "9 Kg",
+        "congSuat": "500W",
+        "congNghe": "Inverter"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Máy Giặt Toshiba 8 Kg",
+      "category": "may-giat",
+      "price": 5290000,
+      "originalPrice": 5990000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Toshiba",
+      "rating": 4.4,
+      "specs": {
+        "dungTich": "8 Kg",
+        "congSuat": "400W"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Nồi Cơm Điện Toshiba 1.8 Lít",
+      "category": "noi-com",
+      "price": 1290000,
+      "originalPrice": 1590000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Toshiba",
+      "rating": 4.6,
+      "specs": {
+        "dungTich": "1.8 Lít",
+        "congSuat": "700W"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Nồi Cơm Điện Tử Panasonic 1 Lít",
+      "category": "noi-com",
+      "price": 1890000,
+      "originalPrice": 2190000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Panasonic",
+      "rating": 4.5,
+      "specs": {
+        "dungTich": "1 Lít",
+        "congSuat": "610W"
+      }
+    },
+    {
+      "id": 8,
+      "name": "Nồi Chiên Không Dầu Philips 4.1 Lít",
+      "category": "noi-chien",
+      "price": 2490000,
+      "originalPrice": 2990000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Philips",
+      "rating": 4.8,
+      "specs": {
+        "dungTich": "4.1 Lít",
+        "congSuat": "1400W"
+      }
+    },
+    {
+      "id": 9,
+      "name": "Nồi Chiên Không Dầu Cuckoo 5.5 Lít",
+      "category": "noi-chien",
+      "price": 1790000,
+      "originalPrice": 2190000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Cuckoo",
+      "rating": 4.3,
+      "specs": {
+        "dungTich": "5.5 Lít",
+        "congSuat": "1700W"
+      }
+    },
+    {
+      "id": 10,
+      "name": "Điều Hòa Panasonic Inverter 1 HP",
+      "category": "dieu-hoa",
+      "price": 10490000,
+      "originalPrice": 11990000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Panasonic",
+      "rating": 4.7,
+      "specs": {
+        "congSuat": "1 HP (9.000 BTU)",
+        "congNghe": "Inverter"
+      }
+    },
+    {
+      "id": 11,
+      "name": "Điều Hòa Toshiba Inverter 1.5 HP",
+      "category": "dieu-hoa",
+      "price": 12990000,
+      "originalPrice": 14490000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Toshiba",
+      "rating": 4.6,
+      "specs": {
+        "congSuat": "1.5 HP (12.000 BTU)",
+        "congNghe": "Inverter"
+      }
+    },
+    {
+      "id": 12,
+      "name": "Quạt Đứng Panasonic F-409K",
+      "category": "quat",
+      "price": 1590000,
+      "originalPrice": 1790000,
+      "image": "https://via.placeholder.com/300",
+      "brand": "Panasonic",
+      "rating": 4.4,
+      "specs": {
+        "congSuat": "45W"
+      }
     }
   ]
 }
