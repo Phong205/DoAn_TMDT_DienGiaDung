@@ -62,12 +62,8 @@ function ProductDetail() {
 
   const changeQty = (delta) => setQuantity((q) => Math.max(1, q + delta));
 
-  // Thêm vào giỏ qua Redux (cartSlice của nhóm).
-  // addToCart mỗi lần cộng 1 sản phẩm nên gọi lặp theo số lượng đã chọn.
   const addSelectedToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      dispatch(addToCart(product));
-    }
+    dispatch(addToCart({ ...product, quantity }));
   };
 
   const handleAddToCart = () => {

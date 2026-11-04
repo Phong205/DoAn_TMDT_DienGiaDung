@@ -3,6 +3,9 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
 
 function App() {
     return (
@@ -14,14 +17,12 @@ function App() {
                 {/* Khu vực chứa nội dung thay đổi theo đường dẫn URL */}
                 <main className="flex-fill">
                     <Routes>
-                        {/* Trang chủ do Thành viên 1 phụ trách */}
                         <Route path="/" element={<Home />} />
-
-                        {/* Các trang sẽ được bàn giao cho các thành viên phát triển tiếp theo */}
                         <Route path="/products" element={<ProductList />} />
                         <Route path="/product/:id" element={<ProductDetail />} />
-                        {/* <Route path="/cart" element={<Cart />} /> */}
-                        {/* <Route path="/checkout" element={<Checkout />} /> */}
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/checkout/success" element={<OrderSuccess />} />
                     </Routes>
                 </main>
             </div>
