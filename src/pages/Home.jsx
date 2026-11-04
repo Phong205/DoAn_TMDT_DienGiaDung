@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { formatPrice, getProducts, FALLBACK_IMG } from '../services/productApi';
 
 function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Gọi API lấy danh sách sản phẩm từ JSON Server
     useEffect(() => {
-        fetch('http://localhost:3000/products')
-            .then((res) => res.json())
-            .then((data) => {
-                setProducts(data);
-                setLoading(false);
-            })
+        getProducts()
+            .then(setProducts)
             .catch((err) => {
                 console.error('Lỗi khi tải sản phẩm:', err);
-                setLoading(false);
-            });
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     return (
@@ -79,17 +75,20 @@ function Home() {
                         <div className="col-md-3 mb-4" key={product.id}>
                             <div className="card h-100 shadow-sm border-0">
                                 <img
-                                    src={product.image || "https://via.placeholder.com/300"}
+                                    src={product.image || FALLBACK_IMG}
                                     className="card-img-top p-3"
                                     alt={product.name}
                                     style={{ height: '200px', objectFit: 'contain' }}
+                                    onError={(e) => {
+                                        e.currentTarget.src = FALLBACK_IMG;
+                                    }}
                                 />
                                 <div className="card-body d-flex flex-column">
                                     <h5 className="card-title fs-6 fw-bold">{product.name}</h5>
                                     <p className="text-danger fw-bold fs-5 mt-auto">
-                                        {product.price?.toLocaleString()} đ
+                                        {formatPrice(product.price)}
                                     </p>
-                                    <Link to={`/products`} className="btn btn-outline-dark btn-sm mt-2">
+                                    <Link to={`/product/${product.id}`} className="btn btn-outline-dark btn-sm mt-2">
                                         Xem Chi Tiết
                                     </Link>
                                 </div>
