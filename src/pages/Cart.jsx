@@ -5,8 +5,20 @@ import { FALLBACK_IMG, formatPrice } from '../services/productApi';
 
 function Cart() {
     const dispatch = useDispatch();
+    // Lấy dữ liệu giỏ hàng từ Redux
     const { items, totalQuantity, totalAmount } = useSelector((state) => state.cart);
 
+    const changeQty = (item, delta) => {
+        dispatch(updateQuantity({ id: item.id, quantity: item.quantity + delta }));
+    };
+
+    const handleClear = () => {
+        if (window.confirm('Xóa toàn bộ sản phẩm trong giỏ?')) {
+            dispatch(clearCart());
+        }
+    };
+
+    // Giỏ trống
     if (items.length === 0) {
         return (
             <div className="container py-5 text-center">
@@ -23,33 +35,28 @@ function Cart() {
         <div className="container py-4 text-start">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2 className="fw-bold mb-0">Giỏ hàng ({totalQuantity})</h2>
-                <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={() => {
-                        if (window.confirm('Xóa toàn bộ sản phẩm trong giỏ?')) {
-                            dispatch(clearCart());
-                        }
-                    }}
-                >
+                <button className="btn btn-outline-danger btn-sm" onClick={handleClear}>
                     Xóa giỏ hàng
                 </button>
             </div>
 
             <div className="row g-4">
+                {/* Danh sách sản phẩm */}
                 <div className="col-lg-8">
                     {items.map((item) => (
                         <div className="card shadow-sm mb-3" key={item.id}>
                             <div className="card-body d-flex flex-column flex-sm-row gap-3 align-items-center">
                                 <img
-                                    src={item.image}
+                                    src={item.image || FALLBACK_IMG}
                                     alt={item.name}
                                     width={96}
                                     height={96}
-                                    className="object-fit-contain"
+                                    style={{ objectFit: 'contain' }}
                                     onError={(e) => {
                                         e.currentTarget.src = FALLBACK_IMG;
                                     }}
                                 />
+
                                 <div className="flex-grow-1 w-100">
                                     <Link
                                         to={`/product/${item.id}`}
@@ -61,17 +68,12 @@ function Cart() {
                                         {formatPrice(item.price)}
                                     </div>
                                 </div>
+
                                 <div className="input-group" style={{ width: 140 }}>
                                     <button
                                         className="btn btn-outline-secondary"
-                                        onClick={() =>
-                                            dispatch(
-                                                updateQuantity({
-                                                    id: item.id,
-                                                    quantity: item.quantity - 1,
-                                                }),
-                                            )
-                                        }
+                                        disabled={item.quantity <= 1}
+                                        onClick={() => changeQty(item, -1)}
                                     >
                                         −
                                     </button>
@@ -82,21 +84,16 @@ function Cart() {
                                     />
                                     <button
                                         className="btn btn-outline-secondary"
-                                        onClick={() =>
-                                            dispatch(
-                                                updateQuantity({
-                                                    id: item.id,
-                                                    quantity: item.quantity + 1,
-                                                }),
-                                            )
-                                        }
+                                        onClick={() => changeQty(item, 1)}
                                     >
                                         +
                                     </button>
                                 </div>
+
                                 <div className="fw-bold text-nowrap">
                                     {formatPrice(item.price * item.quantity)}
                                 </div>
+
                                 <button
                                     className="btn btn-sm btn-outline-danger"
                                     onClick={() => dispatch(removeFromCart(item.id))}
@@ -108,6 +105,7 @@ function Cart() {
                     ))}
                 </div>
 
+                {/* Tóm tắt đơn hàng */}
                 <div className="col-lg-4">
                     <div className="card shadow-sm">
                         <div className="card-body">
