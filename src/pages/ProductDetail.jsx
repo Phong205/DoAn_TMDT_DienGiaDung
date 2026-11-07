@@ -5,13 +5,12 @@ import { addToCart } from '../features/cartSlice';
 import {
   getProductById,
   formatPrice,
-  FALLBACK_IMG,
   SPEC_LABELS,
   CATEGORY_LABELS,
 } from '../services/productApi';
 
 function ProductDetail() {
-  const { id } = useParams(); // Lấy id sản phẩm từ URL /product/:id
+  const { id } = useParams(); // Lấy id sản phẩm từ URL
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -100,7 +99,6 @@ function ProductDetail() {
               alt={product.name}
               className="img-fluid"
               style={{ maxHeight: 400, objectFit: 'contain' }}
-              onError={(e) => (e.currentTarget.src = FALLBACK_IMG)}
             />
           </div>
         </div>

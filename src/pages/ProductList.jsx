@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   getProducts,
   formatPrice,
-  FALLBACK_IMG,
   CATEGORY_LABELS,
 } from '../services/productApi';
 
@@ -35,7 +34,7 @@ function ProductList() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Danh sách thương hiệu / danh mục lấy tự động từ dữ liệu
+  // Danh sách thương hiệu
   const brands = useMemo(
     () => [...new Set(products.map((p) => p.brand))].sort(),
     [products]
@@ -226,7 +225,6 @@ function ProductList() {
                         alt={p.name}
                         className="card-img-top p-3"
                         style={{ height: 200, objectFit: 'contain' }}
-                        onError={(e) => (e.currentTarget.src = FALLBACK_IMG)}
                       />
                     </Link>
                     <div className="card-body d-flex flex-column">
