@@ -4,21 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '../features/cartSlice';
 import { formatPrice } from '../services/productApi';
 
-const emptyForm = {
-    fullName: '',
-    phone: '',
-    address: '',
-    note: '',
-};
+const emptyForm = { fullName: '', phone: '', address: '', note: '' };
 
 function Checkout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { items, totalAmount, totalQuantity } = useSelector((state) => state.cart);
+
     const [form, setForm] = useState(emptyForm);
     const [error, setError] = useState('');
+    // Cờ này ngăn trang tự quay về /cart ngay sau khi clearCart() làm giỏ rỗng
     const [submitted, setSubmitted] = useState(false);
 
+    // Giỏ trống mà chưa đặt hàng thì quay về giỏ hàng
     if (items.length === 0 && !submitted) {
         return <Navigate to="/cart" replace />;
     }
@@ -29,62 +27,87 @@ function Checkout() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!form.fullName.trim() || !form.phone.trim() || !form.address.trim()) {
+
+        const customer = {
+            fullName: form.fullName.trim(),
+            phone: form.phone.trim(),
+            address: form.address.trim(),
+            note: form.note.trim(),
+        };
+
+        if (!customer.fullName || !customer.phone || !customer.address) {
             setError('Vui lòng nhập họ tên, số điện thoại và địa chỉ giao hàng.');
             return;
         }
-        if (!/^0\d{9}$/.test(form.phone.trim())) {
+        if (!/^0\d{9}$/.test(customer.phone)) {
             setError('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0.');
             return;
         }
 
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
         const order = {
             id: Date.now(),
             createdAt: new Date().toISOString(),
-            customer: form,
+            customer,
             items,
             totalQuantity,
             totalAmount,
             paymentMethod: 'COD',
             status: 'Chờ xác nhận',
         };
-        localStorage.setItem('orders', JSON.stringify([order, ...orders]));
+
+        // Lưu đơn hàng vào localStorage
+        try {
+            const oldOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            localStorage.setItem('orders', JSON.stringify([order, ...oldOrders]));
+        } catch {
+            localStorage.setItem('orders', JSON.stringify([order]));
+        }
+
         setSubmitted(true);
-        dispatch(clearCart());
+        dispatch(clearCart()); // Xóa sạch giỏ hàng sau khi đặt thành công
         navigate('/checkout/success', { state: { orderId: order.id } });
     };
 
     return (
         <div className="container py-4 text-start">
             <h2 className="fw-bold mb-4">Thanh toán</h2>
+
             <div className="row g-4">
+                {/* Form giao hàng */}
                 <div className="col-lg-7">
-                    <form className="card shadow-sm" onSubmit={handleSubmit}>
+                    <form className="card shadow-sm" onSubmit={handleSubmit} noValidate>
                         <div className="card-body">
                             <h5 className="fw-bold mb-3">Thông tin giao hàng</h5>
+
                             {error && <div className="alert alert-danger py-2">{error}</div>}
+
                             <div className="mb-3">
-                                <label className="form-label">Họ và tên</label>
+                                <label htmlFor="fullName" className="form-label">Họ và tên</label>
                                 <input
+                                    id="fullName"
                                     name="fullName"
                                     className="form-control"
                                     value={form.fullName}
                                     onChange={onChange}
                                 />
                             </div>
+
                             <div className="mb-3">
-                                <label className="form-label">Số điện thoại</label>
+                                <label htmlFor="phone" className="form-label">Số điện thoại</label>
                                 <input
+                                    id="phone"
                                     name="phone"
+                                    type="tel"
                                     className="form-control"
                                     value={form.phone}
                                     onChange={onChange}
                                 />
                             </div>
+
                             <div className="mb-3">
-                                <label className="form-label">Địa chỉ</label>
+                                <label htmlFor="address" className="form-label">Địa chỉ</label>
                                 <textarea
+                                    id="address"
                                     name="address"
                                     className="form-control"
                                     rows={3}
@@ -92,9 +115,11 @@ function Checkout() {
                                     onChange={onChange}
                                 />
                             </div>
+
                             <div className="mb-3">
-                                <label className="form-label">Ghi chú</label>
+                                <label htmlFor="note" className="form-label">Ghi chú</label>
                                 <textarea
+                                    id="note"
                                     name="note"
                                     className="form-control"
                                     rows={2}
@@ -102,6 +127,7 @@ function Checkout() {
                                     onChange={onChange}
                                 />
                             </div>
+
                             <p className="text-muted small">
                                 Phương thức thanh toán: <strong>COD (thanh toán khi nhận hàng)</strong>
                             </p>
@@ -111,6 +137,8 @@ function Checkout() {
                         </div>
                     </form>
                 </div>
+
+                {/* Tóm tắt đơn */}
                 <div className="col-lg-5">
                     <div className="card shadow-sm">
                         <div className="card-body">
@@ -120,9 +148,7 @@ function Checkout() {
                                     key={item.id}
                                     className="d-flex justify-content-between small mb-2 gap-2"
                                 >
-                                    <span>
-                                        {item.name} × {item.quantity}
-                                    </span>
+                                    <span>{item.name} × {item.quantity}</span>
                                     <span className="text-nowrap">
                                         {formatPrice(item.price * item.quantity)}
                                     </span>
