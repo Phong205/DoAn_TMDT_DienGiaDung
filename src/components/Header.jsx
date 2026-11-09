@@ -34,7 +34,7 @@ function Header() {
                             </li>
                         </ul>
 
-                        <div className="d-flex align-items-center">
+                        <div className="d-flex align-items-center gap-2">
                             <Link to="/cart" className="btn btn-outline-light position-relative">
                                 🛒 Giỏ Hàng
                                 {totalQuantity > 0 && (
@@ -42,6 +42,12 @@ function Header() {
                     {totalQuantity}
                   </span>
                                 )}
+                            </Link>
+                            <Link to="/login" className="btn btn-outline-warning">
+                                Đăng Nhập
+                            </Link>
+                            <Link to="/register" className="btn btn-warning text-dark fw-bold">
+                                Đăng Ký
                             </Link>
                         </div>
                     </div>
