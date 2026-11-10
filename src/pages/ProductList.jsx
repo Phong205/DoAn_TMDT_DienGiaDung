@@ -15,6 +15,9 @@ const PRICE_RANGES = [
   { value: 'o10', label: 'Trên 10 triệu', min: 10000000, max: Infinity },
 ];
 
+// Số sản phẩm hiển thị trên mỗi trang
+const PAGE_SIZE = 6;
+
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +29,7 @@ function ProductList() {
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('default');
   const [keyword, setKeyword] = useState('');
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getProducts()
@@ -44,7 +48,14 @@ function ProductList() {
     [products]
   );
 
+  // Đổi bộ lọc thì quay về trang 1
+  const changeFilter = (setter) => (value) => {
+    setter(value);
+    setPage(1);
+  };
+
   const toggleBrand = (brand) => {
+    setPage(1);
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
@@ -56,6 +67,7 @@ function ProductList() {
     setCategory('all');
     setSortBy('default');
     setKeyword('');
+    setPage(1);
   };
 
   // Lọc + sắp xếp
@@ -83,6 +95,19 @@ function ProductList() {
         return result;
     }
   }, [products, priceRange, selectedBrands, category, sortBy, keyword]);
+
+  // Phân trang
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageProducts = filteredProducts.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const goToPage = (n) => {
+    setPage(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return (
@@ -123,14 +148,14 @@ function ProductList() {
               className="form-control mb-3"
               placeholder="Tìm theo tên..."
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => changeFilter(setKeyword)(e.target.value)}
             />
 
             <h6 className="fw-bold">Danh mục</h6>
             <select
               className="form-select mb-3"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => changeFilter(setCategory)(e.target.value)}
             >
               <option value="all">Tất cả danh mục</option>
               {categories.map((c) => (
@@ -149,7 +174,7 @@ function ProductList() {
                   name="priceRange"
                   id={`price-${r.value}`}
                   checked={priceRange === r.value}
-                  onChange={() => setPriceRange(r.value)}
+                  onChange={() => changeFilter(setPriceRange)(r.value)}
                 />
                 <label className="form-check-label" htmlFor={`price-${r.value}`}>
                   {r.label}
@@ -190,7 +215,7 @@ function ProductList() {
               id="sortBy"
               className="form-select form-select-sm"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => changeFilter(setSortBy)(e.target.value)}
             >
               <option value="default">Mặc định</option>
               <option value="price-asc">Giá tăng dần</option>
@@ -206,7 +231,7 @@ function ProductList() {
           </div>
         ) : (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {filteredProducts.map((p) => {
+            {pageProducts.map((p) => {
               const discount =
                 p.originalPrice > p.price
                   ? Math.round((1 - p.price / p.originalPrice) * 100)
@@ -260,6 +285,44 @@ function ProductList() {
               );
             })}
           </div>
+        )}
+
+        {/* ===== Phân trang ===== */}
+        {totalPages > 1 && (
+          <nav className="mt-4" aria-label="Phân trang sản phẩm">
+            <ul className="pagination justify-content-center">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button
+                  className="page-link"
+                  onClick={() => goToPage(currentPage - 1)}
+                  aria-label="Trang trước"
+                >
+                  &laquo;
+                </button>
+              </li>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <li
+                  key={n}
+                  className={`page-item ${n === currentPage ? 'active' : ''}`}
+                >
+                  <button className="page-link" onClick={() => goToPage(n)}>
+                    {n}
+                  </button>
+                </li>
+              ))}
+              <li
+                className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => goToPage(currentPage + 1)}
+                  aria-label="Trang sau"
+                >
+                  &raquo;
+                </button>
+              </li>
+            </ul>
+          </nav>
         )}
       </section>
     </div>
