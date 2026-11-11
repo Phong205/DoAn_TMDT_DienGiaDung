@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../features/cartSlice';
 import {
   getProductById,
+  getProducts,
   formatPrice,
   SPEC_LABELS,
   CATEGORY_LABELS,
@@ -16,8 +17,12 @@ function ProductDetail() {
 
   // Lưu kèm id đã tải để biết khi nào đang tải sản phẩm mới
   const [result, setResult] = useState({ id: null, product: null });
-  const [quantity, setQuantity] = useState(1);
+  // Số lượng gắn với id sản phẩm: chuyển sang sản phẩm khác thì tự về 1
+  const [qtyState, setQtyState] = useState({ id, qty: 1 });
+  const quantity = qtyState.id === id ? qtyState.qty : 1;
   const [message, setMessage] = useState('');
+  // Toàn bộ sản phẩm, dùng để tìm sản phẩm liên quan
+  const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,6 +34,18 @@ function ProductDetail() {
     return () => {
       cancelled = true;
     };
+  }, [id]);
+
+  // Tải danh sách sản phẩm một lần để tính sản phẩm liên quan
+  useEffect(() => {
+    getProducts()
+      .then(setAllProducts)
+      .catch(() => setAllProducts([]));
+  }, []);
+
+  // Bấm sang sản phẩm khác thì cuộn lên đầu trang
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
 
   const loading = result.id !== id;
@@ -59,7 +76,23 @@ function ProductDetail() {
       : 0;
   const specs = Object.entries(product.specs || {});
 
-  const changeQty = (delta) => setQuantity((q) => Math.max(1, q + delta));
+  const changeQty = (delta) =>
+    setQtyState({ id, qty: Math.max(1, quantity + delta) });
+
+  // Sản phẩm liên quan
+  const RELATED_LIMIT = 4;
+  const others = allProducts.filter((p) => String(p.id) !== String(product.id));
+  const sameCategory = others.filter((p) => p.category === product.category);
+  const sameBrand = others.filter(
+    (p) => p.category !== product.category && p.brand === product.brand
+  );
+  const rest = others.filter(
+    (p) => p.category !== product.category && p.brand !== product.brand
+  );
+  const relatedProducts = [...sameCategory, ...sameBrand, ...rest].slice(
+    0,
+    RELATED_LIMIT
+  );
 
   const addSelectedToCart = () => {
     dispatch(addToCart({ ...product, quantity }));
@@ -184,6 +217,37 @@ function ProductDetail() {
           )}
         </div>
       </div>
+
+      {/* Sản phẩm liên quan */}
+      {relatedProducts.length > 0 && (
+        <section className="mt-5">
+          <h4 className="mb-3">Sản phẩm liên quan</h4>
+          <div className="row row-cols-2 row-cols-md-4 g-3">
+            {relatedProducts.map((p) => (
+              <div className="col" key={p.id}>
+                <Link
+                  to={`/product/${p.id}`}
+                  className="card h-100 shadow-sm text-decoration-none text-dark"
+                >
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="card-img-top p-3"
+                    style={{ height: 160, objectFit: 'contain' }}
+                  />
+                  <div className="card-body pt-0">
+                    <small className="text-muted">{p.brand}</small>
+                    <h6 className="card-title small mb-1">{p.name}</h6>
+                    <div className="text-danger fw-bold">
+                      {formatPrice(p.price)}
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
