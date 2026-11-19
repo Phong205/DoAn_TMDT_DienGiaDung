@@ -1,0 +1,141 @@
+/* Bộ lọc mức giá (PriceRangeFilter) */
+.prf {
+  /* Dùng màu xanh chính của Bootstrap cho đồng bộ với checkbox, nút */
+  --prf-main: var(--bs-primary, #0d6efd);
+  --prf-border: #d9d9d9;
+  --prf-text: #212529;
+  margin-bottom: 1rem;
+}
+
+/* Tiêu đề "Mức giá" + mũi tên thu gọn */
+.prf-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin-bottom: 0.5rem;
+  background: none;
+  border: 0;
+  color: var(--prf-text);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.prf-chevron {
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform 0.2s;
+}
+.prf-chevron.is-collapsed { transform: translateY(1px) rotate(-135deg); }
+@media (prefers-reduced-motion: reduce) {
+  .prf-chevron { transition: none; }
+}
+.prf-header:focus-visible {
+  outline: 2px solid rgba(13, 110, 253, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.prf-body .form-check { margin-bottom: 0.35rem; }
+
+.prf-custom-title {
+  margin: 0.75rem 0 0.5rem;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+/* 2 ô nhập giá */
+.prf-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.prf-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.2rem;
+  border: 1px solid var(--prf-border);
+  border-radius: 6px;
+  /* Đặt màu nền rõ ràng, không để trình duyệt tự đổi sang nền đen khi máy bật dark mode */
+  background: #fff;
+  color-scheme: light;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--prf-text);
+  font-variant-numeric: tabular-nums;
+}
+/* Sidebar hẹp (laptop nhỏ) thì thu chữ lại cho vừa số */
+.prf-body { container-type: inline-size; }
+@container (max-width: 200px) {
+  .prf-input { font-size: 11px; padding-inline: 0.1rem; }
+}
+.prf-input:focus {
+  outline: none;
+  border-color: var(--prf-main);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
+.prf-dash { color: #666; }
+
+/* Thanh kéo 2 đầu: 2 input range chồng lên nhau */
+.prf-slider {
+  position: relative;
+  height: 24px;
+  margin: 14px 2px 4px;
+}
+.prf-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  transform: translateY(-50%);
+  background: #dee2e6;
+  border-radius: 3px;
+}
+.prf-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--prf-main);
+  border-radius: 3px;
+}
+.prf-slider input[type='range'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.prf-slider input[type='range']::-webkit-slider-runnable-track { background: none; border: 0; }
+.prf-slider input[type='range']::-moz-range-track { background: none; border: 0; }
+.prf-slider input[type='range']::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--prf-main);
+  cursor: grab;
+}
+.prf-slider input[type='range']::-moz-range-thumb {
+  pointer-events: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--prf-main);
+  cursor: grab;
+}
+.prf-slider input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
+}
