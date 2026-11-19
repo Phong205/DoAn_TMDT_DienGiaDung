@@ -1,8 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Header() {
+    useLocation();
+    const navigate = useNavigate();
     const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+
+    const user = (() => {
+        try {
+            return JSON.parse(localStorage.getItem('currentUser'));
+        } catch {
+            return null;
+        }
+    })();
+
+    const handleLogout = () => {
+        localStorage.removeItem('currentUser');
+        navigate('/login');
+    };
 
     return (
         <header className="sticky-top shadow-sm">
@@ -27,7 +42,7 @@ function Header() {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/">Trang Chủ</Link>
+                                <Link className="nav-link" to="/">Trang Chủ</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/products">Sản Phẩm</Link>
@@ -39,16 +54,40 @@ function Header() {
                                 🛒 Giỏ Hàng
                                 {totalQuantity > 0 && (
                                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {totalQuantity}
-                  </span>
+                                        {totalQuantity}
+                                    </span>
                                 )}
                             </Link>
-                            <Link to="/login" className="btn btn-outline-warning">
-                                Đăng Nhập
-                            </Link>
-                            <Link to="/register" className="btn btn-warning text-dark fw-bold">
-                                Đăng Ký
-                            </Link>
+
+                            {user ? (
+                                <div className="dropdown">
+                                    <button
+                                        className="btn btn-outline-warning dropdown-toggle"
+                                        type="button"
+                                        id="userDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        👤 {user.name}
+                                    </button>
+                                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <button className="dropdown-item text-danger" onClick={handleLogout}>
+                                                Đăng xuất
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            ) : (
+                                <>
+                                    <Link to="/login" className="btn btn-outline-warning">
+                                        Đăng Nhập
+                                    </Link>
+                                    <Link to="/register" className="btn btn-warning text-dark fw-bold">
+                                        Đăng Ký
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
