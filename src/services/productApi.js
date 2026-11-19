@@ -56,3 +56,21 @@ export const CATEGORY_LABELS = {
   'noi-chien': 'Nồi chiên không dầu',
   'quat': 'Quạt điện',
 };
+
+export const PRICE_PRESETS = [
+  { value: 'u2', label: 'Dưới 2 triệu', min: 0, max: 2000000 },
+  { value: '2-5', label: 'Từ 2 - 5 triệu', min: 2000000, max: 5000000 },
+  { value: '5-10', label: 'Từ 5 - 10 triệu', min: 5000000, max: 10000000 },
+  { value: 'o10', label: 'Trên 10 triệu', min: 10000000, max: Infinity },
+];
+
+export function matchPrice(price, filter) {
+  if (!filter) return true;
+  if (filter.presets) {
+    return filter.presets.some((v) => {
+      const r = PRICE_PRESETS.find((x) => x.value === v);
+      return r && price >= r.min && price < r.max;
+    });
+  }
+  return price >= filter.min && price <= filter.max;
+}

@@ -4,16 +4,9 @@ import {
   getProducts,
   formatPrice,
   CATEGORY_LABELS,
+  matchPrice,
 } from '../services/productApi';
-
-// Các khoảng giá cho bộ lọc
-const PRICE_RANGES = [
-  { value: 'all', label: 'Tất cả', min: 0, max: Infinity },
-  { value: 'u2', label: 'Dưới 2 triệu', min: 0, max: 2000000 },
-  { value: '2-5', label: '2 - 5 triệu', min: 2000000, max: 5000000 },
-  { value: '5-10', label: '5 - 10 triệu', min: 5000000, max: 10000000 },
-  { value: 'o10', label: 'Trên 10 triệu', min: 10000000, max: Infinity },
-];
+import PriceRangeFilter from '../components/PriceRangeFilter';
 
 // Số sản phẩm hiển thị trên mỗi trang
 const PAGE_SIZE = 6;
@@ -24,7 +17,8 @@ function ProductList() {
   const [error, setError] = useState('');
 
   // State bộ lọc
-  const [priceRange, setPriceRange] = useState('all');
+  // Mức giá đang lọc: null = tất cả, { presets: [...] } hoặc { min, max }
+  const [priceRange, setPriceRange] = useState(null);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('default');
@@ -48,6 +42,11 @@ function ProductList() {
     [products]
   );
 
+  const priceMax = useMemo(() => {
+    const highest = Math.max(0, ...products.map((p) => p.price));
+    return Math.max(1000000, Math.ceil(highest / 1000000) * 1000000);
+  }, [products]);
+
   // Đổi bộ lọc thì quay về trang 1
   const changeFilter = (setter) => (value) => {
     setter(value);
@@ -62,7 +61,7 @@ function ProductList() {
   };
 
   const resetFilters = () => {
-    setPriceRange('all');
+    setPriceRange(null);
     setSelectedBrands([]);
     setCategory('all');
     setSortBy('default');
@@ -72,11 +71,10 @@ function ProductList() {
 
   // Lọc + sắp xếp
   const filteredProducts = useMemo(() => {
-    const range = PRICE_RANGES.find((r) => r.value === priceRange);
     const kw = keyword.trim().toLowerCase();
 
     const result = products.filter((p) => {
-      const inPrice = p.price >= range.min && p.price < range.max;
+      const inPrice = matchPrice(p.price, priceRange);
       const inBrand =
         selectedBrands.length === 0 || selectedBrands.includes(p.brand);
       const inCategory = category === 'all' || p.category === category;
@@ -165,22 +163,11 @@ function ProductList() {
               ))}
             </select>
 
-            <h6 className="fw-bold">Khoảng giá</h6>
-            {PRICE_RANGES.map((r) => (
-              <div className="form-check" key={r.value}>
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="priceRange"
-                  id={`price-${r.value}`}
-                  checked={priceRange === r.value}
-                  onChange={() => changeFilter(setPriceRange)(r.value)}
-                />
-                <label className="form-check-label" htmlFor={`price-${r.value}`}>
-                  {r.label}
-                </label>
-              </div>
-            ))}
+            <PriceRangeFilter
+              max={priceMax}
+              value={priceRange}
+              onChange={changeFilter(setPriceRange)}
+            />
 
             <h6 className="fw-bold mt-3">Thương hiệu</h6>
             {brands.map((brand) => (
