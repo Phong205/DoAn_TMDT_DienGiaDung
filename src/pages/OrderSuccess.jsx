@@ -54,6 +54,18 @@ function OrderSuccess() {
                             </div>
                         ))}
                         <hr />
+                        {order.discountAmount > 0 && (
+                            <>
+                                <div className="d-flex justify-content-between small mb-1">
+                                    <span>Tạm tính</span>
+                                    <span>{formatPrice(order.subtotal)}</span>
+                                </div>
+                                <div className="d-flex justify-content-between small mb-2 text-success">
+                                    <span>Giảm giá ({order.couponCode})</span>
+                                    <span>−{formatPrice(order.discountAmount)}</span>
+                                </div>
+                            </>
+                        )}
                         <div className="d-flex justify-content-between fw-bold">
                             <span>Tổng cộng</span>
                             <span className="text-danger">{formatPrice(order.totalAmount)}</span>

@@ -1,15 +1,27 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { clearCart } from '../features/cartSlice';
 import { formatPrice } from '../services/productApi';
+import { useCartPricing } from '../hooks/useCartPricing';
 
 const emptyForm = { fullName: '', phone: '', address: '', note: '' };
 
 function Checkout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { items, totalAmount, totalQuantity } = useSelector((state) => state.cart);
+    // Giỏ hàng + số tiền sau khi trừ mã giảm giá (cùng cách tính với trang Giỏ hàng)
+    const {
+        items,
+        totalQuantity,
+        subtotal,
+        couponCode,
+        couponResult,
+        couponValid,
+        couponsLoaded,
+        discountAmount,
+        finalAmount,
+    } = useCartPricing();
 
     const [form, setForm] = useState(emptyForm);
     const [error, setError] = useState('');
@@ -50,7 +62,10 @@ function Checkout() {
             customer,
             items,
             totalQuantity,
-            totalAmount,
+            subtotal, // tạm tính trước giảm giá
+            couponCode: couponValid ? couponCode : null,
+            discountAmount,
+            totalAmount: finalAmount, // số tiền khách phải trả
             paymentMethod: 'COD',
             status: 'Chờ xác nhận',
         };
@@ -131,7 +146,11 @@ function Checkout() {
                             <p className="text-muted small">
                                 Phương thức thanh toán: <strong>COD (thanh toán khi nhận hàng)</strong>
                             </p>
-                            <button type="submit" className="btn btn-warning fw-bold text-dark">
+                            <button
+                                type="submit"
+                                className="btn btn-warning fw-bold text-dark"
+                                disabled={Boolean(couponCode) && !couponsLoaded}
+                            >
                                 Đặt hàng
                             </button>
                         </div>
@@ -155,9 +174,24 @@ function Checkout() {
                                 </div>
                             ))}
                             <hr />
+                            <div className="d-flex justify-content-between small mb-2">
+                                <span>Tạm tính</span>
+                                <span>{formatPrice(subtotal)}</span>
+                            </div>
+                            {discountAmount > 0 && (
+                                <div className="d-flex justify-content-between small mb-2 text-success">
+                                    <span>Giảm giá ({couponCode})</span>
+                                    <span>−{formatPrice(discountAmount)}</span>
+                                </div>
+                            )}
+                            {couponCode && couponResult && !couponResult.valid && (
+                                <div className="alert alert-warning py-2 small">
+                                    Mã {couponCode} không còn áp dụng: {couponResult.message}
+                                </div>
+                            )}
                             <div className="d-flex justify-content-between fw-bold">
                                 <span>Tổng cộng</span>
-                                <span className="text-danger">{formatPrice(totalAmount)}</span>
+                                <span className="text-danger">{formatPrice(finalAmount)}</span>
                             </div>
                             <Link to="/cart" className="btn btn-link px-0">
                                 Quay lại giỏ hàng
