@@ -4,6 +4,7 @@ const initialState = {
     items: JSON.parse(localStorage.getItem('cartItems')) || [],
     totalQuantity: JSON.parse(localStorage.getItem('totalQuantity')) || 0,
     totalAmount: JSON.parse(localStorage.getItem('totalAmount')) || 0,
+    coupon: JSON.parse(localStorage.getItem('cartCoupon')) || null,
 };
 
 const recalc = (state) => {
@@ -15,6 +16,11 @@ const saveCartToLocalStorage = (state) => {
     localStorage.setItem('cartItems', JSON.stringify(state.items));
     localStorage.setItem('totalQuantity', JSON.stringify(state.totalQuantity));
     localStorage.setItem('totalAmount', JSON.stringify(state.totalAmount));
+    if (state.coupon) {
+        localStorage.setItem('cartCoupon', JSON.stringify(state.coupon));
+    } else {
+        localStorage.removeItem('cartCoupon');
+    }
 };
 
 export const cartSlice = createSlice({
@@ -63,12 +69,23 @@ export const cartSlice = createSlice({
             state.items = [];
             state.totalQuantity = 0;
             state.totalAmount = 0;
+            state.coupon = null;
             localStorage.removeItem('cartItems');
             localStorage.removeItem('totalQuantity');
             localStorage.removeItem('totalAmount');
+            localStorage.removeItem('cartCoupon');
+        },
+        removeCoupon: (state) => {
+            state.coupon = null;
+            saveCartToLocalStorage(state);
+        },
+
+        applyCoupon: (state, action) => {
+            state.coupon = action.payload || null;
+            saveCartToLocalStorage(state);
         },
     },
 });
 
-export const { addToCart, updateQuantity, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart, clearCart, removeCoupon, applyCoupon } = cartSlice.actions;
 export default cartSlice.reducer;
