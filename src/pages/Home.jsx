@@ -36,7 +36,6 @@ function Home() {
 
     return (
         <div className="container py-4">
-            {/* Banner quảng cáo chính & banner phụ */}
             <div className="row g-3 mb-5">
                 <div className="col-lg-8">
                     <div id="homeBannerCarousel" className="carousel slide rounded-3 overflow-hidden shadow-sm h-100" data-bs-ride="carousel">
@@ -97,7 +96,6 @@ function Home() {
                 </div>
             </div>
 
-            {/* Danh mục thiết bị điện mở rộng */}
             <section className="mb-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
@@ -136,7 +134,6 @@ function Home() {
                 </div>
             </section>
 
-            {/* Sản phẩm nổi bật */}
             <div className="row mb-3">
                 <div className="col-12">
                     <h2 className="fw-bold mb-3">Sản Phẩm Nổi Bật</h2>
