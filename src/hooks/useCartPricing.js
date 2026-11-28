@@ -2,12 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getCoupons, validateCoupon } from '../services/couponService';
 
-
 export function useCartPricing() {
     const { items, totalQuantity, totalAmount, couponCode } = useSelector((state) => state.cart);
 
     const [coupons, setCoupons] = useState([]);
-    const [suggestions, setSuggestions] = useState([]); // mã còn dùng được, để gợi ý
+    const [suggestions, setSuggestions] = useState([]);
     const [couponsLoaded, setCouponsLoaded] = useState(false);
 
     useEffect(() => {
@@ -30,7 +29,7 @@ export function useCartPricing() {
         };
     }, []);
 
-    // Kiểm tra lại mã mỗi khi giỏ đổi (ví dụ xóa bớt hàng làm đơn không đủ tối thiểu)
+
     const couponResult = useMemo(() => {
         if (!couponCode || !couponsLoaded) return null;
         return validateCoupon(couponCode, { coupons, items, subtotal: totalAmount });
